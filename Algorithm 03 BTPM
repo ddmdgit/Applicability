@@ -1,0 +1,194 @@
+from datetime import datetime
+start_time = datetime.now()
+
+minFUT=8 # minFUT=75%*n ;n=number of features
+
+#1 Importing Excel Datasheet
+
+import pandas as pd
+df = pd.read_excel('C:\\Python\\Btpm\\Excel\\6.xlsx', header=None)
+#print(df)
+#-------------------------- break----------------------
+#2 Excel Data is saved in an array records[]
+records = []
+for i in range(0, 300):
+    records.append([str(df.values[i,j]) for j in range(0, 8)])
+#-------------------------- break----------------------
+#3 Extracting distinct features of the datasheet
+ArrayFeatures=[]
+for r in records:
+    for c in r:
+        if c not in ArrayFeatures:
+            if str(c) != 'nan':
+                ArrayFeatures.append(c)
+#-------------------------- break----------------------
+#ArrayFeatures
+#-------------------------- break----------------------
+#4 Creating required 2D array ArrayDataSet for calculation
+
+rows, cols = (len(records), len(ArrayFeatures)) 
+ArrayDataSet = [[0 for i in range(cols)] for j in range(rows)] 
+#ArrayDataSet
+#-------------------------- break----------------------
+#5 Building array ArrayDatasetBIMF by merging array ArrayFeatures and array ArrayDataSet
+
+import numpy as np
+
+ArrayDatasetBIMF=np.vstack((ArrayFeatures,ArrayDataSet))
+#ArrayDatasetBIMF
+#-------------------------- break----------------------
+#6 Updating ArrayDatasetBIMF with binary digist to represent feature usage
+i=1
+for r in records:
+    j=-1
+    for c in r: 
+        j=j+1
+        if str(c) != 'nan':
+            for z in range(0,8):
+                if c == ArrayDatasetBIMF[0][z]:
+                    #ArrayDataSet[i][z]=c
+                    ArrayDatasetBIMF[i][z]=1      
+    i=i+1   
+#-------------------------- break----------------------
+#ArrayDatasetBIMF
+#-------------------------- break----------------------
+#7 Delete the header column
+
+import numpy as np
+ArrayDatasetBIMF = np.delete(ArrayDatasetBIMF, 0, axis=0)
+#print(ArrayDatasetBIMF)
+#-------------------------- break----------------------
+#8 update TDVT, CNB values
+# merge them to ArrayDatasetBIMF
+
+from array import *
+
+ArrayTDVT=[]
+abc=[]
+tdvt=0 
+count=0 
+i=-1 
+j=0
+
+for r in ArrayDatasetBIMF:
+    i=i+1
+    count=0
+    tdvt=0
+    for c in r:        
+        count = count + int(c)
+        tdvt = tdvt + int(c)*2**j 
+        j=j+1
+        if j==len(r):
+            abc.append([tdvt, count])
+            count=0
+            tdvt=0
+            j=0    
+ArrayTDVT=np.column_stack((ArrayDatasetBIMF, abc))
+#for p in range(len(ArrayTDVT)): 
+#    print (p, end = " ") 
+#    print (ArrayTDVT[p])
+#-------------------------- break----------------------
+#9 Creating array ArrayPatterns by selecting frequent patterns for minimum threshold minFUT
+
+ArrayPatterns=[]
+i=-1
+j=-1
+tvdt=0
+cnb=0
+temp=0
+count=0
+s=0
+#minFUT=8 # minFUT=75%*n ;n=number of features
+for r in ArrayTDVT:
+    i=i+1
+    j=0
+    for c in r:
+        j=j+1
+        if j==len(r)-1:
+            tdvt=int(c)
+        elif j==len(r):
+            cnb=int(c)
+            if cnb>minFUT or cnb==minFUT:
+               # print(i,"binary digit count",cnb)
+                if ArrayPatterns == []:
+                    count=1
+                    ArrayPatterns.append([tdvt, count])
+                    #print(i,"first",tdvt,count)
+                else:
+                    z=0
+                    for p in ArrayPatterns:
+                        #print("iteration",z)
+                        temp=0
+                        if p[0] == tdvt:
+                            temp=p[1]
+                            p[1]=temp+1
+                            #print(i,"existing", tdvt, p[1])
+                            z=z+1
+                       
+                    if z==0:
+                        count=1
+                        ArrayPatterns.append([tdvt, count])
+                       # print(i,"new", tdvt, count, z)            
+#ArrayPatterns
+#-------------------------- break----------------------
+# 10 Updating array ArrayPatters with frequent patterns and their frequency
+
+i=0
+for r in ArrayPatterns:
+    i=i+1
+    bb=r[0]
+    res = [int(i) for i in list('{0:0b}'.format(bb))] 
+    my_lst_str = ''.join(map(str, res))
+
+    ac=int(my_lst_str)
+    bc=format(ac, '08d')
+
+    def reverse(x):
+      return x[::-1]
+
+    resed=reverse(bc)
+
+    import re
+    onescount=len(re.sub("[^1-1]", "", resed))
+
+    r.append(resed)
+    r.append(onescount)
+#-------------------------- break----------------------
+#for p in range(len(ArrayPatterns)): 
+#    print (p, end = " ") 
+#    print (ArrayPatterns[p])     
+#-------------------------- break----------------------
+# 11 Updating ArrayPatterns with frequwnt patterns
+
+for k in ArrayPatterns:
+
+    string=k[2]
+    t=0
+    z2=0
+    st=''
+    for element in range(0, len(string)): 
+        digs=string[element]
+        for af in ArrayFeatures:
+            if digs=='1' and t==z2 and t!=len(ArrayFeatures): 
+                if st=='':
+                    st=ArrayFeatures[z2]
+                else:
+                    st=st+','+ArrayFeatures[z2]
+                z2=z2+1
+        t=t+1
+        z2=t
+    k.append(st)
+    pres=k[1]*100/50,'%'
+    k.append(pres)
+    PresFut='FUT Presentage',k[3]/8*100,'%'
+    k.append(PresFut)
+#-------------------------- break----------------------
+# 12 
+for p in range(len(ArrayPatterns)): 
+    print (p, end = " ") 
+    print (ArrayPatterns[p])
+#-------------------------- break----------------------
+
+
+end_time = datetime.now()
+print('Duration: {}'.format(end_time - start_time))
