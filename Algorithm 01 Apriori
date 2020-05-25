@@ -1,0 +1,39 @@
+from datetime import datetime
+start_time = datetime.now()
+
+#Importing the required datasets
+import numpy as np
+import pandas as pd
+from apyori import apriori
+
+#Loading the dataset
+store_data = pd.read_excel('C:\\Python\\Btpm\\Excel\\1.xlsx', header=None)
+
+#Having a glance at the records
+store_data
+
+#Look at the shape
+store_data.shape
+
+#Convert Pandas DataFrame into a list of lists
+records = []
+for i in range(0, 50):
+    records.append([str(store_data.values[i,j]) for j in range(0, 2)])
+
+#Build the Apriori model
+association_rules = apriori(records, min_support=0.2, min_confidence=0.4, min_lift=1.0, min_length=5)
+association_results = list(association_rules)
+
+#Print out the number of rules
+print(len(association_results))
+
+#Glancing at the first rule
+#print(association_results[0])
+
+for k in range(0, len(association_results)):
+    print("Rule: ", k+1) 
+    print(association_results[k])
+    print("=====================================")
+    
+end_time = datetime.now()
+print('Duration: {}'.format(end_time - start_time))
