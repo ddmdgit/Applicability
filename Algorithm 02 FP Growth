@@ -1,0 +1,31 @@
+from datetime import datetime
+start_time = datetime.now()
+
+import numpy as np
+import pandas as pd
+import pyfpgrowth
+
+store_data = pd.read_excel('C:\\Python\\Btpm\\Excel\\6.xlsx')
+#store_data = pd.read_excel('C:\\Python\\MLData1.xlsx')
+store_data.shape
+
+records = []
+for i in range(0, 249):
+    records.append([str(store_data.values[i,j]) for j in range(0, 8)])
+    
+patterns = pyfpgrowth.find_frequent_patterns(records, 40)
+
+rules = pyfpgrowth.generate_association_rules(patterns, .8)
+
+association_results = list(rules)
+
+print(len(association_results))
+i=0
+for k in range(0, len(association_results)):
+    if len(association_results[k])==5:
+        print("Rule: ", k+1) 
+        print(i,len(association_results[k]), association_results[k])
+        print("=====================================")
+        i=i+1
+end_time = datetime.now()
+print('Duration: {}'.format(end_time - start_time))
