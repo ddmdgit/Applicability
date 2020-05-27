@@ -1,7 +1,9 @@
 from datetime import datetime
 start_time = datetime.now()
 
-minFUT=8 # minFUT=75%*n ;n=number of features
+minFUT=75   # minimum threshold 75%
+            # Give the value without precentage (%)
+            # minFUT=75%*n ;n=number of features
 
 #1 Importing Excel Datasheet
 
@@ -108,7 +110,7 @@ for r in ArrayTDVT:
             tdvt=int(c)
         elif j==len(r):
             cnb=int(c)
-            if cnb>minFUT or cnb==minFUT:
+            if cnb>minFUT*(8/100) or cnb==minFUT*(8/100):
                # print(i,"binary digit count",cnb)
                 if ArrayPatterns == []:
                     count=1
