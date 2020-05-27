@@ -10,12 +10,12 @@ store_data = pd.read_excel('C:\\Python\\Btpm\\Excel\\6.xlsx')
 store_data.shape
 
 records = []
-for i in range(0, 249):
+for i in range(0, 249): # the maximum number should be changed with (total number of transactions - 1)
     records.append([str(store_data.values[i,j]) for j in range(0, 8)])
     
-patterns = pyfpgrowth.find_frequent_patterns(records, 40)
+patterns = pyfpgrowth.find_frequent_patterns(records, 40) # This parameter also need to be change according to the requirement.
 
-rules = pyfpgrowth.generate_association_rules(patterns, .8)
+rules = pyfpgrowth.generate_association_rules(patterns, .8) # This parameter also need to be change according to the requirement.
 
 association_results = list(rules)
 
