@@ -6,7 +6,7 @@ There are three algorithms included in this repository (01.Apriori, 02.FP Growth
 
 These algorithms were developed to run on Jupyter notebook.
 
-In Algorithm - 03 BTMP following modifications required to be done when run time.
+In Algorithm - 03 BTPM following modifications required to be done when run time.
 
 in line 4, minFUT (threshold for minimum feature usage in a transaction) has to be given.
 
