@@ -17,11 +17,11 @@ store_data.shape
 
 #Convert Pandas DataFrame into a list of lists
 records = []
-for i in range(0, 50):
+for i in range(0, 50):      # the maximum value i.e. 50 required to be changed.
     records.append([str(store_data.values[i,j]) for j in range(0, 2)])
 
 #Build the Apriori model
-association_rules = apriori(records, min_support=0.2, min_confidence=0.4, min_lift=1.0, min_length=5)
+association_rules = apriori(records, min_support=0.2, min_confidence=0.4, min_lift=1.0, min_length=5)  # These parameters also need to be change according to the requirement.
 association_results = list(association_rules)
 
 #Print out the number of rules
